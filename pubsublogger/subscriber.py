@@ -1,9 +1,19 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import redis
+from logbook import Logger
+import ConfigParser
 from logbook import NestedSetup, NullHandler, FileHandler, MailHandler
 import os
 
+# Required
+redis_host = 'localhost'
+redis_port = 6379
+pubsub = None
+channel = None
+
+# Required only if you want to send emails
 dest_mails = []
 smtp_server = None
 smtp_port = 0
@@ -43,3 +53,37 @@ def setup(name, path = 'log', enable_debug = False):
             bubble=True, server_addr=(smtp_server, smtp_port)))
 
     return NestedSetup(setup)
+
+def mail_setup(path):
+    global dest_mails
+    global smtp_server
+    global smtp_port
+    global src_server
+    config = ConfigParser.RawConfigParser()
+    config.readfp(path)
+    dest_mails = config.get('mail', 'dest_mail').split(',')
+    smtp_server = config.get('mail', 'smtp_server')
+    smtp_port = config.get('mail', 'smtp_port')
+    src_server = config.get('mail', 'src_server')
+
+def run(log_name, path, debug = False, mail = None):
+    global pubsub
+    global channel
+    channel = log_name
+    r = redis.StrictRedis(host=redis_host, port=redis_port)
+    pubsub = r.pubsub()
+    pubsub.psubscribe(channel + '.*')
+
+    logger = Logger(channel)
+    if mail is not None:
+        mail_setup(mail)
+    with setup(channel, path, debug):
+        for msg in pubsub.listen():
+            if msg['type'] == 'pmessage':
+                level = msg['channel'].split('.')[1]
+                message = msg['data']
+                logger.log(level, message)
+
+
+def stop():
+    pubsub.punsubscribe(channel + '.*')
