@@ -1,6 +1,13 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+"""
+:mod:`subscriber` -- Subscribe to a redis channel and gather logging messages.
+
+To use this module, you have to define at least a channel name.
+"""
+
+
 import redis
 from logbook import Logger
 import ConfigParser
@@ -20,6 +27,15 @@ smtp_port = 0
 src_server = None
 
 def setup(name, path = 'log', enable_debug = False):
+    """
+    Prepare a NestedSetup.
+
+    :param name: the channel name
+    :param path: the path where the logs will be written
+    :param enable_debug: do we want to save the message at the DEBUG level
+
+    :return a nested Setup
+    """
     path_tmpl = os.path.join(path, '{name}_{level}.log')
     info = path_tmpl.format(name = name, level = 'info')
     warn = path_tmpl.format(name = name, level = 'warn')
@@ -55,6 +71,11 @@ def setup(name, path = 'log', enable_debug = False):
     return NestedSetup(setup)
 
 def mail_setup(path):
+    """
+    Set the variables to be able to send emails.
+
+    :param path: path to the config file
+    """
     global dest_mails
     global smtp_server
     global smtp_port
@@ -67,6 +88,16 @@ def mail_setup(path):
     src_server = config.get('mail', 'src_server')
 
 def run(log_name, path, debug = False, mail = None):
+    """
+    Run a subscriber and pass the messages to the logbook setup.
+    Stays alive as long as the pubsub instance listen to something.
+
+    :param log_name: the channel to listen to
+    :param path: the path where the log files will be written
+    :param debug: True if you want to save the debug messages too
+    :param mail: Path to the config file for the mails
+
+    """
     global pubsub
     global channel
     channel = log_name
@@ -77,6 +108,10 @@ def run(log_name, path, debug = False, mail = None):
     logger = Logger(channel)
     if mail is not None:
         mail_setup(mail)
+    if os.path.exists(path) and not os.path.isdir(path):
+        raise Exception("The path you want to use to save the file is invalid (not a directory).")
+    if not os.path.exists(path):
+        os.mkdir(path)
     with setup(channel, path, debug):
         for msg in pubsub.listen():
             if msg['type'] == 'pmessage':
@@ -86,4 +121,7 @@ def run(log_name, path, debug = False, mail = None):
 
 
 def stop():
+    """
+    Unsubscribe to the channel, stop the script.
+    """
     pubsub.punsubscribe(channel + '.*')

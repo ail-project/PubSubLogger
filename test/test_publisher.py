@@ -19,7 +19,6 @@ if __name__ == '__main__':
     publisher.hostname = args.hostname
     publisher.port = args.port
 
-    publisher.connect()
     for i in range(0,21):
         if i%2 == 0 :
             publisher.info('test' + str(i))
