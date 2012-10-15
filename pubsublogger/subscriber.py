@@ -117,6 +117,10 @@ def run(log_name, path, debug = False, mail = None):
             if msg['type'] == 'pmessage':
                 level = msg['channel'].split('.')[1]
                 message = msg['data']
+                try:
+                    message = message.decode('utf-8')
+                except:
+                    pass
                 logger.log(level, message)
 
 
