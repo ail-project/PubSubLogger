@@ -21,6 +21,10 @@ if __name__ == '__main__':
             type=str, help='Set the hostname of the server.')
     parser.add_argument("-p", "--port", default=6379,
             type=int, help='Set the server port.')
+    parser.add_argument('-s', '--use_unix_socket',  action='store_true',
+            help='Use a unix socket path instead of a tcp socket.')
+    parser.add_argument("--unix_socket_path", default='/tmp/redis.sock',
+            type=str, help='Unix socket path.')
     parser.add_argument("-c", "--channel",
             type=str, required=True, help='Channel to subscribe to.')
     parser.add_argument("-l", "--log_path",
@@ -32,7 +36,10 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    subscriber.redis_host = args.hostname
-    subscriber.redis_port = args.port
+    if args.use_unix_socket:
+        subscriber.unix_socket = args.unix_socket_path
+    else:
+        subscriber.hostname = args.hostname
+        subscriber.port = args.port
     subscriber.run(args.channel, args.log_path, args.debug, args.mail)
 

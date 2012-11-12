@@ -17,8 +17,15 @@ import redis
 
 from pubsublogger.exceptions import InvalidErrorLevel, NoChannelError
 
+# use a TCP Socket by default
+use_tcp_socket = True
+
+#default config for a UNIX socket
+unix_socket = '/tmp/redis.sock'
+# default config for a TCP socket
 hostname = 'localhost'
 port = 6379
+
 channel = None
 redis_instance = None
 
@@ -30,7 +37,10 @@ def __connect():
     Connect to a redis instance.
     """
     global redis_instance
-    redis_instance = redis.StrictRedis(host=hostname, port=port)
+    if use_tcp_socket:
+        redis_instance = redis.StrictRedis(host=hostname, port=port)
+    else:
+        redis_instance = redis.StrictRedis(unix_socket_path = unix_socket)
 
 
 def log(level, message):

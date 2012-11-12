@@ -14,9 +14,15 @@ import ConfigParser
 from logbook import NestedSetup, NullHandler, FileHandler, MailHandler
 import os
 
-# Required
-redis_host = 'localhost'
-redis_port = 6379
+# use a TCP Socket by default
+use_tcp_socket = True
+
+#default config for a UNIX socket
+unix_socket = '/tmp/redis.sock'
+# default config for a TCP socket
+hostname = 'localhost'
+port = 6379
+
 pubsub = None
 channel = None
 
@@ -101,7 +107,10 @@ def run(log_name, path, debug = False, mail = None):
     global pubsub
     global channel
     channel = log_name
-    r = redis.StrictRedis(host=redis_host, port=redis_port)
+    if use_tcp_socket:
+        r = redis.StrictRedis(host=hostname, port=port)
+    else:
+        r = redis.StrictRedis(unix_socket_path = unix_socket)
     pubsub = r.pubsub()
     pubsub.psubscribe(channel + '.*')
 

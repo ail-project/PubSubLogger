@@ -9,15 +9,28 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='Configure a logging publisher.')
 
-    parser.add_argument("-H", "--hostname", default='localhost', type=str, help='Set the hostname of the server.')
-    parser.add_argument("-p", "--port", default=6379, type=int, help='Set the server port.')
-    parser.add_argument("-c", "--channel",type=str, required=True, help='Channel to publish into.')
+    parser.add_argument('-s', '--use_unix_socket',  action='store_true',
+            help='Use a unix socket path instead of a tcp socket.')
+    parser.add_argument("--unix_socket_path", default='/tmp/redis.sock',
+            type=str, help='Unix socket path.')
+
+    parser.add_argument("-H", "--hostname", default='localhost',
+            type=str, help='Set the hostname of the server.')
+    parser.add_argument("-p", "--port", default=6379,
+            type=int, help='Set the server port.')
+    parser.add_argument("-c", "--channel",
+            type=str, required=True, help='Channel to publish into.')
 
     args = parser.parse_args()
 
+    if args.use_unix_socket:
+        publisher.use_tcp_socket = False
+        publisher.unix_socket = args.unix_socket_path
+    else:
+        publisher.hostname = args.hostname
+        publisher.port = args.port
+
     publisher.channel = args.channel
-    publisher.hostname = args.hostname
-    publisher.port = args.port
 
     for i in range(0,21):
         if i%2 == 0 :
@@ -30,3 +43,4 @@ if __name__ == '__main__':
             publisher.critical('test' + str(i))
         else:
             publisher.debug('test' + str(i))
+        time.sleep(1)
