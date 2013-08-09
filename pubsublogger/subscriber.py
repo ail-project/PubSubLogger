@@ -68,11 +68,11 @@ def setup(name, path = 'log', enable_debug = False):
             and smtp_port != 0 and len(dest_mails) != 0:
         mail_tmpl = '{name}_error@{src}'
         from_mail = mail_tmpl.format(name = name, src = src_server)
-        print from_mail
+        subject = 'Error in {}'.format(name)
         # errors should then be delivered by mail and also be kept
         # in the application log, so we let them bubble up.
-        setup.append(MailHandler(from_mail, dest_mails, level='ERROR',
-            bubble=True, server_addr=(smtp_server, smtp_port)))
+        setup.append(MailHandler(from_mail, dest_mails, subject,
+            level='ERROR', bubble=True, server_addr=(smtp_server, smtp_port)))
 
     return NestedSetup(setup)
 
