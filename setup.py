@@ -1,15 +1,25 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-from distutils.core import setup
+from setuptools import setup
 
 setup(
     name='PubSubLogger',
-    version='0.1',
+    version='1.0',
     author='Raphaël Vinot',
     author_email='raphael.vinot@gmail.com',
-    url='https://github.com/Rafiot/PubSubLogger.git',
+    maintainer='Raphaël Vinot',
+    url='https://github.com/Rafiot/PubSubLogger',
+    description='Logging system using the PubSub functionality of Redis.',
     packages=['pubsublogger'],
     scripts = ['log_subscriber'],
-    license='Do What The Fuck You Want To Public License',
-    long_description=open('README.md').read(),
+    classifiers=[
+        'License :: OSI Approved :: BSD License',
+        'Development Status :: 5 - Production/Stable',
+        'Environment :: Console',
+        'Intended Audience :: Science/Research',
+        'Intended Audience :: Telecommunications Industry',
+        'Programming Language :: Python',
+        'Topic :: System :: Logging'
+    ],
+    install_requires=['redis', 'logbook']
     )
