@@ -3,7 +3,7 @@
 from setuptools import setup
 
 setup(
-    name='PubSubLogger',
+    name='pubsublogger',
     version='1.0',
     author='Raphaël Vinot',
     author_email='raphael.vinot@gmail.com',
