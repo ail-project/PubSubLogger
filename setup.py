@@ -4,14 +4,14 @@ from setuptools import setup
 
 setup(
     name='pubsublogger',
-    version='1.0',
+    version='1.1',
     author='Raphaël Vinot',
-    author_email='raphael.vinot@gmail.com',
+    author_email='raphael.vinot@circl.lu',
     maintainer='Raphaël Vinot',
     url='https://github.com/Rafiot/PubSubLogger',
     description='Logging system using the PubSub functionality of Redis.',
     packages=['pubsublogger'],
-    scripts = ['log_subscriber'],
+    scripts=['log_subscriber'],
     classifiers=[
         'License :: OSI Approved :: BSD License',
         'Development Status :: 5 - Production/Stable',
@@ -22,4 +22,4 @@ setup(
         'Topic :: System :: Logging'
     ],
     install_requires=['redis', 'logbook']
-    )
+)
