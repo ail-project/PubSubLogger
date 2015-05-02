@@ -4,7 +4,7 @@ from setuptools import setup
 
 setup(
     name='pubsublogger',
-    version='1.1',
+    version='1.2',
     author='Raphaël Vinot',
     author_email='raphael.vinot@circl.lu',
     maintainer='Raphaël Vinot',
@@ -18,7 +18,8 @@ setup(
         'Environment :: Console',
         'Intended Audience :: Science/Research',
         'Intended Audience :: Telecommunications Industry',
-        'Programming Language :: Python',
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
         'Topic :: System :: Logging'
     ],
     install_requires=['redis', 'logbook']

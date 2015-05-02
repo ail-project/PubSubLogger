@@ -10,7 +10,10 @@ To use this module, you have to define at least a channel name.
 
 import redis
 from logbook import Logger
-import ConfigParser
+try:
+    import configparser
+except ImportError:
+    import ConfigParser as configparser
 from logbook import NestedSetup
 from logbook import NullHandler
 from logbook import TimedRotatingFileHandler
@@ -97,7 +100,7 @@ def mail_setup(path):
     global smtp_server
     global smtp_port
     global src_server
-    config = ConfigParser.RawConfigParser()
+    config = configparser.RawConfigParser()
     config.readfp(path)
     dest_mails = config.get('mail', 'dest_mail').split(',')
     smtp_server = config.get('mail', 'smtp_server')

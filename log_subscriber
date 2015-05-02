@@ -9,7 +9,7 @@ from pubsublogger import subscriber
 def signal_handler(signal, frame):
     if subscriber.pubsub is not None:
         subscriber.stop()
-        print "Subscriber closed."
+        print("Subscriber closed.")
 
 signal.signal(signal.SIGINT, signal_handler)
 

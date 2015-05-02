@@ -20,7 +20,7 @@ from pubsublogger.exceptions import InvalidErrorLevel, NoChannelError
 # use a TCP Socket by default
 use_tcp_socket = True
 
-#default config for a UNIX socket
+# default config for a UNIX socket
 unix_socket = '/tmp/redis.sock'
 # default config for a TCP socket
 hostname = 'localhost'
@@ -40,7 +40,7 @@ def __connect():
     if use_tcp_socket:
         redis_instance = redis.StrictRedis(host=hostname, port=port)
     else:
-        redis_instance = redis.StrictRedis(unix_socket_path = unix_socket)
+        redis_instance = redis.StrictRedis(unix_socket_path=unix_socket)
 
 
 def log(level, message):
@@ -95,5 +95,3 @@ def critical(message):
     Publush a CRITICAL `message`
     """
     log('CRITICAL', message)
-
-
