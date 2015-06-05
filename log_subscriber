@@ -31,7 +31,7 @@ if __name__ == '__main__':
                         required=True, help='Path where the logs will be written')
     parser.add_argument("-d", "--debug", action="store_true",
                         help='Also log debug messages.')
-    parser.add_argument("-m", "--mail", type=file, default=None,
+    parser.add_argument("-m", "--mail", type=str, default=None,
                         help='Path to the config file used to send errors by email.')
 
     args = parser.parse_args()

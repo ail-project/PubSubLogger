@@ -139,7 +139,7 @@ def run(log_name, path, debug=False, mail=None):
     with setup(channel, path, debug):
         for msg in pubsub.listen():
             if msg['type'] == 'pmessage':
-                level = msg['channel'].split('.')[1]
+                level = msg['channel'].decode('utf-8').split('.')[1]
                 message = msg['data']
                 try:
                     message = message.decode('utf-8')
