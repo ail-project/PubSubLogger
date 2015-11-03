@@ -9,6 +9,7 @@ To use this module, you have to define at least a channel name.
 
 
 import redis
+import time
 from logbook import Logger
 try:
     import configparser
@@ -108,7 +109,7 @@ def mail_setup(path):
     src_server = config.get('mail', 'src_server')
 
 
-def run(log_name, path, debug=False, mail=None):
+def run(log_name, path, debug=False, mail=None, timeout=0):
     """
     Run a subscriber and pass the messages to the logbook setup.
     Stays alive as long as the pubsub instance listen to something.
@@ -129,6 +130,9 @@ def run(log_name, path, debug=False, mail=None):
     pubsub = r.pubsub()
     pubsub.psubscribe(channel + '.*')
 
+    if timeout != 0:
+        deadline = time.time() + timeout
+
     logger = Logger(channel)
     if mail is not None:
         mail_setup(mail)
@@ -137,15 +141,21 @@ def run(log_name, path, debug=False, mail=None):
     if not os.path.exists(path):
         os.mkdir(path)
     with setup(channel, path, debug):
-        for msg in pubsub.listen():
-            if msg['type'] == 'pmessage':
-                level = msg['channel'].decode('utf-8').split('.')[1]
-                message = msg['data']
-                try:
-                    message = message.decode('utf-8')
-                except:
-                    pass
-                logger.log(level, message)
+        while True:
+            msg = pubsub.get_message()
+            if msg:
+                if msg['type'] == 'pmessage':
+                    level = msg['channel'].decode('utf-8').split('.')[1]
+                    message = msg['data']
+                    try:
+                        message = message.decode('utf-8')
+                    except:
+                        pass
+                    logger.log(level, message)
+            time.sleep(0.01)
+            if timeout > 0:
+                if time.time() >= deadline:
+                    break
 
 
 def stop():

@@ -12,6 +12,7 @@ setup(
     description='Logging system using the PubSub functionality of Redis.',
     packages=['pubsublogger'],
     scripts=['log_subscriber'],
+    test_suite="test",
     classifiers=[
         'License :: OSI Approved :: BSD License',
         'Development Status :: 5 - Production/Stable',
