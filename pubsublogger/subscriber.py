@@ -19,6 +19,7 @@ from logbook import NestedSetup
 from logbook import NullHandler
 from logbook import TimedRotatingFileHandler
 from logbook import MailHandler
+from logbook import SyslogHandler
 import os
 
 # use a TCP Socket by default
@@ -40,7 +41,7 @@ smtp_port = 0
 src_server = None
 
 
-def setup(name, path='log', enable_debug=False):
+def setup(name, path='log', enable_debug=False, syslog=False):
     """
     Prepare a NestedSetup.
 
@@ -77,6 +78,12 @@ def setup(name, path='log', enable_debug=False):
         debug = path_tmpl.format(name=name, level='debug')
         setup.insert(1, TimedRotatingFileHandler(debug, level='DEBUG',
                      encoding='utf-8', date_format='%Y-%m-%d'))
+
+    if syslog:
+        setup.append(SyslogHandler(warn, level='WARNING'))
+        setup.append(SyslogHandler(err, level='ERROR'))
+        setup.append(SyslogHandler(crit, level='CRITICAL'))
+
     if src_server is not None and smtp_server is not None \
             and smtp_port != 0 and len(dest_mails) != 0:
         mail_tmpl = '{name}_error@{src}'
@@ -109,7 +116,7 @@ def mail_setup(path):
     src_server = config.get('mail', 'src_server')
 
 
-def run(log_name, path, debug=False, mail=None, timeout=0):
+def run(log_name, path, debug=False, mail=None, syslog=False, timeout=0):
     """
     Run a subscriber and pass the messages to the logbook setup.
     Stays alive as long as the pubsub instance listen to something.
@@ -118,6 +125,7 @@ def run(log_name, path, debug=False, mail=None, timeout=0):
     :param path: the path where the log files will be written
     :param debug: True if you want to save the debug messages too
     :param mail: Path to the config file for the mails
+    :param syslog: enable syslog
 
     """
     global pubsub
@@ -140,7 +148,7 @@ def run(log_name, path, debug=False, mail=None, timeout=0):
         raise Exception("The path you want to use to save the file is invalid (not a directory).")
     if not os.path.exists(path):
         os.mkdir(path)
-    with setup(channel, path, debug):
+    with setup(channel, path, debug, syslog):
         while True:
             msg = pubsub.get_message()
             if msg:
