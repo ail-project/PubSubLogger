@@ -4,10 +4,10 @@ from setuptools import setup
 
 setup(
     name='pubsublogger',
-    version='1.2.3',
+    version='1.2.4',
     author='Raphaël Vinot',
     author_email='raphael.vinot@circl.lu',
-    maintainer='Aurélien Thirion, Raphaël Vinot',
+    maintainer='Aurelien Thirion',
     url='https://github.com/ail-project/PubSubLogger',
     description='Logging system using the PubSub functionality of Redis.',
     packages=['pubsublogger'],
