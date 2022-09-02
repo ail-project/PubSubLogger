@@ -33,7 +33,10 @@ if __name__ == '__main__':
                         help='Also log debug messages.')
     parser.add_argument("-m", "--mail", type=str, default=None,
                         help='Path to the config file used to send errors by email.')
+    parser.add_argument("--syslog", action='store_true',
+                        help='Enable syslog.')
 
+    parser.set_defaults(syslog=False)
     args = parser.parse_args()
 
     if args.use_unix_socket:
@@ -41,4 +44,4 @@ if __name__ == '__main__':
     else:
         subscriber.hostname = args.hostname
         subscriber.port = args.port
-    subscriber.run(args.channel, args.log_path, args.debug, args.mail)
+    subscriber.run(args.channel, args.log_path, args.debug, args.mail, args.syslog)

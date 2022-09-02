@@ -80,6 +80,7 @@ def setup(name, path='log', enable_debug=False, syslog=False):
                      encoding='utf-8', date_format='%Y-%m-%d'))
 
     if syslog:
+        #address=
         setup.append(SyslogHandler(warn, level='WARNING'))
         setup.append(SyslogHandler(err, level='ERROR'))
         setup.append(SyslogHandler(crit, level='CRITICAL'))
