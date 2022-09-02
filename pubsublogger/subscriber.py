@@ -41,7 +41,7 @@ smtp_port = 0
 src_server = None
 
 
-def setup(name, path='log', enable_debug=False, syslog=False):
+def setup(name, path='log', enable_debug=False, syslog=False, syslog_address=None):
     """
     Prepare a NestedSetup.
 
@@ -79,11 +79,15 @@ def setup(name, path='log', enable_debug=False, syslog=False):
         setup.insert(1, TimedRotatingFileHandler(debug, level='DEBUG',
                      encoding='utf-8', date_format='%Y-%m-%d'))
 
-    if syslog:
-        #address=
-        setup.append(SyslogHandler(warn, level='WARNING'))
-        setup.append(SyslogHandler(err, level='ERROR'))
-        setup.append(SyslogHandler(crit, level='CRITICAL'))
+    if syslog or syslog_address:
+        #address=(host, port)
+        if syslog_address:
+            address = syslog_address
+        else:
+            address = None
+        setup.append(SyslogHandler(warn, address=address, level='WARNING'))
+        setup.append(SyslogHandler(err, address=address, level='ERROR'))
+        setup.append(SyslogHandler(crit, address=address, level='CRITICAL'))
 
     if src_server is not None and smtp_server is not None \
             and smtp_port != 0 and len(dest_mails) != 0:
