@@ -121,7 +121,7 @@ def mail_setup(path):
     src_server = config.get('mail', 'src_server')
 
 
-def run(log_name, path, debug=False, mail=None, syslog=False, timeout=0):
+def run(log_name, path, debug=False, mail=None, syslog=False, syslog_address=None, timeout=0):
     """
     Run a subscriber and pass the messages to the logbook setup.
     Stays alive as long as the pubsub instance listen to something.
@@ -153,7 +153,7 @@ def run(log_name, path, debug=False, mail=None, syslog=False, timeout=0):
         raise Exception("The path you want to use to save the file is invalid (not a directory).")
     if not os.path.exists(path):
         os.mkdir(path)
-    with setup(channel, path, debug, syslog):
+    with setup(channel, path, debug, syslog, syslog_address):
         while True:
             msg = pubsub.get_message()
             if msg:

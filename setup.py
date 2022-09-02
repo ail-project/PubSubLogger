@@ -4,7 +4,7 @@ from setuptools import setup
 
 setup(
     name='pubsublogger',
-    version='1.2.5',
+    version='1.2.6',
     author='Raphaël Vinot',
     author_email='raphael.vinot@circl.lu',
     maintainer='Aurelien Thirion',
