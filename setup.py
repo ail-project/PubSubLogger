@@ -4,11 +4,11 @@ from setuptools import setup
 
 setup(
     name='pubsublogger',
-    version='1.2.2',
+    version='1.2.3',
     author='Raphaël Vinot',
     author_email='raphael.vinot@circl.lu',
-    maintainer='Raphaël Vinot',
-    url='https://github.com/Rafiot/PubSubLogger',
+    maintainer='Aurélien Thirion, Raphaël Vinot',
+    url='https://github.com/ail-project/PubSubLogger',
     description='Logging system using the PubSub functionality of Redis.',
     packages=['pubsublogger'],
     scripts=['log_subscriber'],
@@ -19,7 +19,6 @@ setup(
         'Environment :: Console',
         'Intended Audience :: Science/Research',
         'Intended Audience :: Telecommunications Industry',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Topic :: System :: Logging'
     ],
